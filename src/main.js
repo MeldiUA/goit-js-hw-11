@@ -9,16 +9,6 @@ const galleryList = document.querySelector(".gallery");
 
 const loader = document.querySelector('.loader');
 
-const userQuery = document.querySelector('input[name="search"]');
-
-
-const searchParamsDefaults = new URLSearchParams({
-    key: '41901315-991c01eb87449dbd0d544d02b',
-    q: "cat",
-    image_type: 'photo',
-    orientation: 'horizontal',
-    safesearch: true,
-});
 
 const lightbox = new SimpleLightbox('.gallery a', {
     nav: true,
@@ -30,8 +20,15 @@ const lightbox = new SimpleLightbox('.gallery a', {
   });
 
 
- function searchImg (params) {
-    return fetch(`https://pixabay.com/api/?${params}`)
+ function searchImg (q = "cat") {
+  const searchParamsDefaults = new URLSearchParams({
+    key: '41901315-991c01eb87449dbd0d544d02b',
+    q,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+});
+    return fetch(`https://pixabay.com/api/?${searchParamsDefaults}`)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Request is not OK");
@@ -80,9 +77,7 @@ form.addEventListener('submit', event => {
     event.preventDefault();
     galleryList.innerHTML = '';
     loader.style.display = 'block';
-    searchParamsDefaults.set("q", userQuery.value.trim());
-    const searchParams = new URLSearchParams(searchParamsDefaults);
-    searchImg(searchParams);
+    searchImg(event.target.elements.search.value.trim());
     event.currentTarget.reset();
   });
 
